@@ -1,0 +1,140 @@
+{
+  "name": "wp-audit",
+  "displayName": "WP Audit - WordPress Performance & Security Linter",
+  "description": "Static analysis and live URL scanning for WordPress themes and plugins. Catches performance antipatterns, security vulnerabilities, and generates scored HTML reports with quick fixes.",
+  "version": "1.1.0",
+  "publisher": "RenzoJohnson",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:php",
+    "onView:wpAudit.results",
+    "onCommand:wpAudit.scanFile",
+    "onCommand:wpAudit.scanWorkspace",
+    "onCommand:wpAudit.scanUrl"
+  ],
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "wordpress",
+    "wp",
+    "performance",
+    "security",
+    "audit",
+    "php",
+    "linter",
+    "pagespeed",
+    "static analysis",
+    "vulnerabilities"
+  ],
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#21759B",
+    "theme": "dark"
+  },
+  "homepage": "https://renzojohnson.com/contributions/wp-audit",
+  "repository": {
+    "type": "git",
+    "url": "https://renzojohnson.com/contributions/wp-audit"
+  },
+  "bugs": {
+    "url": "https://renzojohnson.com/contact"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^18",
+    "@vscode/vsce": "^3",
+    "typescript": "^5.9.0"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "wpAudit.scanFile",
+        "title": "WP Audit: Scan Current File",
+        "icon": "$(search)"
+      },
+      {
+        "command": "wpAudit.scanWorkspace",
+        "title": "WP Audit: Scan Workspace",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "wpAudit.scanUrl",
+        "title": "WP Audit: Scan Live URL",
+        "icon": "$(globe)"
+      },
+      {
+        "command": "wpAudit.showReport",
+        "title": "WP Audit: Show Report",
+        "icon": "$(output)"
+      },
+      {
+        "command": "wpAudit.clearDiagnostics",
+        "title": "WP Audit: Clear All Diagnostics"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "wpAudit.scanFile",
+          "when": "resourceLangId == php",
+          "group": "wpaudit"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "WP Audit",
+      "properties": {
+        "wpAudit.scanOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically scan PHP files on save"
+        },
+        "wpAudit.enablePerformanceRules": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable performance audit rules"
+        },
+        "wpAudit.enableSecurityRules": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable security audit rules"
+        },
+        "wpAudit.ignorePaths": {
+          "type": "array",
+          "default": ["vendor/**", "node_modules/**", "wp-admin/**", "wp-includes/**"],
+          "description": "Glob patterns to exclude from scanning"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "wpAudit",
+          "title": "WP Audit",
+          "icon": "media/shield.svg"
+        }
+      ]
+    },
+    "views": {
+      "wpAudit": [
+        {
+          "id": "wpAudit.results",
+          "name": "Audit Results"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,115 @@
+import { Rule } from '../types';
+
+export const PERFORMANCE_RULES: Rule[] = [
+    {
+        id: 'WPA001',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'Script loaded in header',
+        description: 'wp_enqueue_script should load scripts in the footer. Pass true as the 5th parameter ($in_footer) to avoid render-blocking.',
+        pattern: /wp_enqueue_script\s*\(/g,
+        exclude: /wp_enqueue_script\s*\([^)]*,\s*true\s*\)/,
+        fix: {
+            label: 'Load script in footer (in_footer: true)',
+            replacement: (_match, line) => {
+                if (/,\s*false\s*\)/.test(line)) {
+                    return line.replace(/,\s*false\s*\)/, ', true)');
+                }
+                return line.replace(/\)\s*;/, ', true);');
+            },
+        },
+    },
+    {
+        id: 'WPA002',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'WordPress version exposed in asset version',
+        description: 'Using the WordPress version as an asset version string exposes the WP version. Use a custom version or null.',
+        pattern: /wp_enqueue_(?:script|style)\s*\([^)]*(?:get_bloginfo\s*\(\s*['"]version['"]\s*\)|wp_get_theme\(\)->get\(\s*['"]Version['"]\s*\)|\$wp_version)[^)]*\)/g,
+    },
+    {
+        id: 'WPA003',
+        severity: 'error',
+        category: 'performance',
+        scope: 'static',
+        title: 'query_posts() used',
+        description: 'query_posts() modifies the main query and causes extra SQL queries. Use WP_Query or get_posts() instead.',
+        pattern: /\bquery_posts\s*\(/g,
+        fix: {
+            label: 'Replace with new WP_Query()',
+            replacement: (_match, line) => line.replace(/\bquery_posts\s*\(/, 'new WP_Query('),
+        },
+    },
+    {
+        id: 'WPA004',
+        severity: 'info',
+        category: 'performance',
+        scope: 'static',
+        title: 'get_posts() without explicit limit',
+        description: 'get_posts() uses a default limit of 5. Consider setting numberposts or posts_per_page explicitly for clarity.',
+        pattern: /\bget_posts\s*\(/g,
+        exclude: /numberposts|posts_per_page/,
+    },
+    {
+        id: 'WPA005',
+        severity: 'info',
+        category: 'performance',
+        scope: 'static',
+        title: 'jQuery dependency',
+        description: 'Script depends on jQuery. Consider using vanilla JavaScript for better performance.',
+        pattern: /wp_enqueue_script\s*\([^)]*['"]jquery['"]/g,
+    },
+    {
+        id: 'WPA006',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'Inline CSS in template',
+        description: 'Inline <style> blocks should be moved to an enqueued stylesheet for caching.',
+        pattern: /<style[\s>]/gi,
+        exclude: /wp_add_inline_style/,
+    },
+    {
+        id: 'WPA007',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'Inline JS in template',
+        description: 'Inline <script> blocks should be moved to an enqueued script file for caching.',
+        pattern: /<script[\s>]/gi,
+        exclude: /application\/(?:ld\+json|json)|wp_add_inline_script/,
+    },
+    {
+        id: 'WPA008',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'Image missing lazy loading',
+        description: 'Add loading="lazy" to images below the fold for better page load performance.',
+        pattern: /<img\b(?![^>]*loading\s*=)[^>]*>/gi,
+    },
+    {
+        id: 'WPA009',
+        severity: 'info',
+        category: 'performance',
+        scope: 'static',
+        title: '!important in CSS',
+        description: 'Overuse of !important indicates fragile CSS specificity. Refactor selectors instead.',
+        pattern: /!\s*important/gi,
+    },
+    {
+        id: 'WPA010',
+        severity: 'warning',
+        category: 'performance',
+        scope: 'static',
+        title: 'Insecure HTTP URL',
+        description: 'HTTP URLs for assets cause mixed content warnings on HTTPS sites.',
+        pattern: /['"]http:\/\/[^'"]+\.(?:js|css|png|jpg|jpeg|gif|svg|woff2?|ttf|eot)(?:[?#][^'"]*)?['"]/gi,
+        fix: {
+            label: 'Replace http:// with https://',
+            replacement: (_match, line) => line.replace(/http:\/\//, 'https://'),
+        },
+    },
+];
