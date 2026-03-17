@@ -2,7 +2,7 @@
   "name": "wp-audit",
   "displayName": "WP Audit - WordPress Performance & Security Linter",
   "description": "Static analysis and live URL scanning for WordPress themes and plugins. Catches performance antipatterns, security vulnerabilities, and generates scored HTML reports with quick fixes.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "RenzoJohnson",
   "license": "MIT",
   "engines": {
@@ -40,7 +40,7 @@
   "homepage": "https://renzojohnson.com/contributions/wp-audit",
   "repository": {
     "type": "git",
-    "url": "https://renzojohnson.com/contributions/wp-audit"
+    "url": "https://github.com/renzojohnson/wp-audit"
   },
   "bugs": {
     "url": "https://renzojohnson.com/contact"
